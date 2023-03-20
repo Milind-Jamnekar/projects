@@ -4,31 +4,47 @@ import { useState } from "react";
 import { Todo } from "./Todo";
 
 export interface TodoType {
+  id: number;
   title: string;
   isComplete: boolean;
 }
 
 const initial: TodoType[] = [
-  { title: "complete this todo app ⭐", isComplete: false },
-  { title: "deploy this app ☁", isComplete: false },
-  { title: "tell everyone on about it 🎭", isComplete: false },
+  { id: 1, title: "complete this todo app ⭐", isComplete: false },
+  { id: 2, title: "deploy this app ☁", isComplete: false },
+  { id: 3, title: "tell everyone on about it 🎭", isComplete: false },
 ];
 
 export default function TodoApp() {
   const [todos, setTodos] = useState(initial);
+
+  const removeTodo = (id: number) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+
+  const toggleTodo = (id: number) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, isComplete: !todo.isComplete };
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+  };
 
   return (
     <div className="card max-w-md mx-auto bg-base-100 shadow-xl border-slate-100">
       <h1 className="text-3xl text-center">Todo App</h1>
       <div className="card-body">
         <h2 className="card-title text-xl">Todos 📝</h2>
-        {/* <p>If a dog chews shoes whose shoes does he choose?</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
-        </div> */}
-
         {todos.map((todo) => (
-          <Todo key={todo.title} {...todo} />
+          <Todo
+            toggleTodo={toggleTodo}
+            removeTodo={removeTodo}
+            key={todo.id}
+            {...todo}
+          />
         ))}
       </div>
     </div>
